@@ -1,15 +1,49 @@
-datasource db {
-  provider = "postgresql"
-  // url      = env("DATABASE_URL")
-}
-
 generator client {
   provider = "prisma-client-js"
 }
 
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  LAWYER
+  CLERK
+}
+
 model User {
-  id        String   @id @default(uuid())
+  id        Int      @id @default(autoincrement())
   email     String   @unique
   password  String
+  role      Role     @default(LAWYER)
   createdAt DateTime @default(now())
+
+  // Relations
+  lawyerCases Case[] @relation("LawyerCases")
+  clerkCases  Case[] @relation("ClerkCases")
+}
+
+
+
+model Case {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+
+  status      CaseStatus @default(OPEN)
+
+  lawyerId    Int
+  clerkId     Int?
+
+  lawyer      User      @relation("LawyerCases", fields: [lawyerId], references: [id])
+  clerk       User?     @relation("ClerkCases", fields: [clerkId], references: [id])
+
+  createdAt   DateTime  @default(now())
+}
+
+enum CaseStatus {
+  OPEN
+  CLOSED
 }

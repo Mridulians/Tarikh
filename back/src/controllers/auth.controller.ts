@@ -6,8 +6,7 @@ import { AuthRequest } from "../middleware/auth.middleware";
 
 
 
-
-export const register = async (req:Request, res:Response) => {
+export const register = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -28,7 +27,7 @@ export const register = async (req:Request, res:Response) => {
 
 
 
-export const login = async (req:Request, res:Response) => {
+export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   const user = await prisma.user.findUnique({
@@ -46,9 +45,9 @@ export const login = async (req:Request, res:Response) => {
   }
 
   const token = jwt.sign(
-    { userId: user.id },
+    { userId: user.id, role: user.role },
     process.env.JWT_SECRET!,
-    { expiresIn: "1d" }
+    { expiresIn: "7d" },
   );
 
   res.json({ token });
@@ -57,14 +56,21 @@ export const login = async (req:Request, res:Response) => {
 
 
 export const me = async (req: AuthRequest, res: Response) => {
-  const userId = req.userId;
+  // const userId = req.userId;
+
+  if(!req.user){
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const userId = req.user.id;
 
   const user = await prisma.user.findUnique({
-    where: { id: userId },
+    where: { id: parseInt(userId!) },
     select: {
       id: true,
       email: true,
       createdAt: true,
+      role: true,
     },
   });
 
@@ -72,5 +78,12 @@ export const me = async (req: AuthRequest, res: Response) => {
     return res.status(404).json({ message: "User not found" });
   }
 
+  // console.log("i am user : " , user )
   res.json(user);
+
+//   res.json({
+//     id: user.id,
+//     email: user.email,
+//     role: user.role,
+//   });
 };
