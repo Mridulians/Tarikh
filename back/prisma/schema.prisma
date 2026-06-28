@@ -7,43 +7,227 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
+// enum Role {
+//   ADMIN
+//   LAWYER
+//   CLERK
+// }
+
+// model User {
+//   id        Int      @id @default(autoincrement())
+//   email     String   @unique
+//   password  String
+//   role      Role     @default(LAWYER)
+//   createdAt DateTime @default(now())
+
+//   // Relations
+//   lawyerCases Case[] @relation("LawyerCases")
+//   clerkCases  Case[] @relation("ClerkCases")
+// }
+
+
+
+// model Case {
+//   id          Int      @id @default(autoincrement())
+//   title       String
+//   description String
+
+//   status      CaseStatus @default(OPEN)
+
+//   lawyerId    Int
+//   clerkId     Int?
+
+//   lawyer      User      @relation("LawyerCases", fields: [lawyerId], references: [id])
+//   clerk       User?     @relation("ClerkCases", fields: [clerkId], references: [id])
+
+//   createdAt   DateTime  @default(now())
+// }
+
+// enum CaseStatus {
+//   OPEN
+//   CLOSED
+// }
+
+
+
+
+
+
+
 enum Role {
-  ADMIN
   LAWYER
   CLERK
-}
-
-model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  role      Role     @default(LAWYER)
-  createdAt DateTime @default(now())
-
-  // Relations
-  lawyerCases Case[] @relation("LawyerCases")
-  clerkCases  Case[] @relation("ClerkCases")
-}
-
-
-
-model Case {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String
-
-  status      CaseStatus @default(OPEN)
-
-  lawyerId    Int
-  clerkId     Int?
-
-  lawyer      User      @relation("LawyerCases", fields: [lawyerId], references: [id])
-  clerk       User?     @relation("ClerkCases", fields: [clerkId], references: [id])
-
-  createdAt   DateTime  @default(now())
+  ADMIN
 }
 
 enum CaseStatus {
   OPEN
   CLOSED
+  PENDING
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum CommunicationMode {
+  SMS
+  EMAIL
+  WHATSAPP
+  CALL
+}
+
+enum ActivityType {
+  CREATED
+  UPDATED
+  STATUS_CHANGED
+  CLERK_ASSIGNED
+  CLERK_REMOVED
+  DELETED
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role
+  createdAt DateTime @default(now())
+
+    // lawyer unique code
+  lawyerCode String? @unique
+
+  // clerk belongs to lawyer
+  lawyerId Int?
+
+  lawyer User? @relation("LawyerClerks", fields: [lawyerId], references: [id])
+
+  clerks User[] @relation("LawyerClerks")
+
+  // Relations
+  casesCreated Case[]        @relation("CaseCreator")
+  assignedCases CaseClerk[]
+
+  activities    CaseActivity[]   // ✅ ADD THIS
+
+   // 🔥 ADD THIS
+  clients Client[]
+
+  // Notifications
+  notifications Notification[]
+}
+
+model Client {
+  id        Int      @id @default(autoincrement())
+  name      String
+  phone     String
+  email     String?
+  type      String?  // Individual / Company
+
+  // Reminder Preferences
+  preferredMode CommunicationMode @default(SMS)
+  reminderBefore Int              // minutes before hearing (e.g. 1440 = 1 day)
+
+  createdAt DateTime @default(now())
+
+  // 🔥 ADD THIS
+  createdById Int
+  createdBy   User   @relation(fields: [createdById], references: [id])
+
+  // Relations
+  cases Case[]
+}
+
+model Case {
+  id          Int         @id @default(autoincrement())
+  title       String
+  description String?
+
+  status      CaseStatus  @default(OPEN)
+  priority    Priority    @default(MEDIUM)
+
+  caseNumber  String?     // official court number
+  courtName   String?
+  hearingDate DateTime    // 🔥 CRITICAL
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Relations
+  createdById Int
+  createdBy   User        @relation("CaseCreator", fields: [createdById], references: [id])
+
+  clientId    Int
+  client      Client      @relation(fields: [clientId], references: [id])
+
+  clerks      CaseClerk[]
+  activities  CaseActivity[]
+
+  notifications Notification[]
+}
+
+model CaseClerk {
+  id      Int @id @default(autoincrement())
+
+  caseId  Int
+  userId  Int
+
+  case    Case @relation(fields: [caseId], references: [id])
+  user    User @relation(fields: [userId], references: [id])
+
+  assignedAt DateTime @default(now())
+
+  @@unique([caseId, userId]) // prevent duplicate assignment
+}
+
+// model CaseActivity {
+//   id        Int      @id @default(autoincrement())
+//   caseId    Int
+
+//   type      String   // "STATUS_CHANGE", "NOTE", "HEARING_UPDATE"
+//   message   String
+
+//   createdAt DateTime @default(now())
+
+//   case Case @relation(fields: [caseId], references: [id])
+// }
+
+
+model CaseActivity {
+  id         Int      @id @default(autoincrement())
+
+  caseId     Int
+  case       Case     @relation(fields: [caseId], references: [id], onDelete: Cascade)
+
+  action     ActivityType
+  message    String
+
+  performedById Int
+  performedBy   User   @relation(fields: [performedById], references: [id])
+
+  metadata   Json?     // 🔥 flexible (store extra info like clerkId, status change etc.)
+
+  createdAt  DateTime @default(now())
+}
+
+model Notification {
+  id           Int      @id @default(autoincrement())
+
+  userId       Int
+  user         User     @relation(fields: [userId], references: [id])
+
+  caseId       Int?
+  case         Case?    @relation(fields: [caseId], references: [id])
+
+  title        String
+  message      String
+  type         String   @default("REMINDER")
+
+  isRead       Boolean  @default(false)
+
+  scheduledFor DateTime?
+  createdAt    DateTime @default(now())
 }
