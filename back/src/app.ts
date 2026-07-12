@@ -10,7 +10,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", " https://tarikh-frontend.onrender.com"],
+    origin: ["http://localhost:5173", "https://tarikh-frontend-new.onrender.com"],
     credentials: true,
   }),
 );
