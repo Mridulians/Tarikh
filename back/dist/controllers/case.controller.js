@@ -8,6 +8,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getCaseDetails = exports.getCaseActivity = exports.assignClerk = exports.deleteCase = exports.updateCase = exports.getCaseById = exports.getMyCases = exports.getCases = exports.createCase = void 0;
 const client_1 = __importDefault(require("../prisma/client"));
+// import { AuthRequest } from "../middleware/auth.middleware";
 const activity_1 = require("../utils/activity");
 const case_validation_1 = require("../validations/case.validation");
 // ✅ CREATE CASE

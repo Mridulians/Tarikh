@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteClient = exports.updateClient = exports.getClientById = exports.getClients = exports.createClient = void 0;
+// import { AuthRequest } from "../middleware/auth.middleware";
 const client_1 = __importDefault(require("../prisma/client"));
 const client_validation_1 = require("../validations/client.validation");
 // export const createClient = async (req: Request, res: Response) => {

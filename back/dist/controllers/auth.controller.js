@@ -12,6 +12,7 @@ exports.me = exports.login = exports.register = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const client_1 = __importDefault(require("../prisma/client"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
+// import { AuthRequest } from "../middleware/auth.middleware";
 const auth_validator_1 = require("../validations/auth.validator");
 // ✅ REGISTER
 // export const register = async (req: Request, res: Response) => {
