@@ -484,9 +484,9 @@
 
 // NEW CODE STARTS HERE
 
-import { Response } from "express";
+import { Request, Response } from "express";
 import prisma from "../prisma/client";
-import { AuthRequest } from "../middleware/auth.middleware";
+// import { AuthRequest } from "../middleware/auth.middleware";
 import { logActivity } from "../utils/activity";
 import {
   assignClerkSchema,
@@ -572,7 +572,7 @@ import {
 //   }
 // };
 
-export const createCase = async (req: AuthRequest, res: Response) => {
+export const createCase = async (req: Request, res: Response) => {
   if (!req.user) {
     return res.status(401).json({ message: "Unauthorized" });
   }
@@ -660,7 +660,7 @@ export const createCase = async (req: AuthRequest, res: Response) => {
 };
 
 // ✅ GET ALL CASES (ADMIN ONLY - ROLE BASED CONTROL IN CONTROLLER)
-export const getCases = async (req: AuthRequest, res: Response) => {
+export const getCases = async (req: Request, res: Response) => {
   if (!req.user) {
     return res.status(401).json({ message: "Unauthorized" });
   }
@@ -690,7 +690,7 @@ export const getCases = async (req: AuthRequest, res: Response) => {
 };
 
 // ✅ GET MY CASES (ROLE BASED)
-export const getMyCases = async (req: AuthRequest, res: Response) => {
+export const getMyCases = async (req: Request, res: Response) => {
   if (!req.user) {
     return res.status(401).json({ message: "Unauthorized" });
   }
@@ -744,7 +744,7 @@ export const getMyCases = async (req: AuthRequest, res: Response) => {
 };
 
 // ✅ GET CASE BY ID
-export const getCaseById = async (req: AuthRequest, res: Response) => {
+export const getCaseById = async (req: Request, res: Response) => {
   try {
     const caseId = Number(req.params.id);
 
@@ -789,7 +789,7 @@ export const getCaseById = async (req: AuthRequest, res: Response) => {
 };
 
 // ✅ UPDATE CASE
-export const updateCase = async (req: AuthRequest, res: Response) => {
+export const updateCase = async (req: Request, res: Response) => {
   try {
     const caseId = Number(req.params.id);
 
@@ -878,7 +878,7 @@ export const updateCase = async (req: AuthRequest, res: Response) => {
 };
 
 // ✅ DELETE CASE
-export const deleteCase = async (req: AuthRequest, res: Response) => {
+export const deleteCase = async (req: Request, res: Response) => {
   try {
     const caseId = Number(req.params.id);
 
@@ -1012,7 +1012,7 @@ export const deleteCase = async (req: AuthRequest, res: Response) => {
 //     return res.status(500).json({ message: "Server error" });
 //   }
 // };
-export const assignClerk = async (req: AuthRequest, res: Response) => {
+export const assignClerk = async (req: Request, res: Response) => {
   try {
     // ✅ AUTH CHECK
     if (!req.user) {
@@ -1134,7 +1134,7 @@ export const assignClerk = async (req: AuthRequest, res: Response) => {
 };
 
 // ✅ GET CASE ACTIVITY LOG
-export const getCaseActivity = async (req: AuthRequest, res: Response) => {
+export const getCaseActivity = async (req: Request, res: Response) => {
   const caseId = Number(req.params.id);
 
   if (isNaN(caseId)) {
@@ -1162,7 +1162,7 @@ export const getCaseActivity = async (req: AuthRequest, res: Response) => {
 };
 
 // Complete case details APIs
-export const getCaseDetails = async (req: AuthRequest, res: Response) => {
+export const getCaseDetails = async (req: Request, res: Response) => {
   try {
     const caseId = Number(req.params.id);
 

@@ -1,0 +1,23 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const auth_middleware_1 = require("../middleware/auth.middleware");
+const role_middleware_1 = require("../middleware/role.middleware");
+const case_controller_1 = require("../controllers/case.controller");
+const case_controller_2 = require("../controllers/case.controller");
+const case_controller_3 = require("../controllers/case.controller");
+const case_controller_4 = require("../controllers/case.controller");
+const case_controller_5 = require("../controllers/case.controller");
+const case_controller_6 = require("../controllers/case.controller");
+const case_controller_7 = require("../controllers/case.controller");
+const router = (0, express_1.Router)();
+router.post("/create-case", auth_middleware_1.authMiddleware, (0, role_middleware_1.requireRole)(["LAWYER"]), case_controller_1.createCase);
+router.get("/getall-cases", auth_middleware_1.authMiddleware, case_controller_2.getCases); // role-based access control can be implemented in this controller
+router.get("/my-cases", auth_middleware_1.authMiddleware, case_controller_7.getMyCases);
+router.get("/:id", auth_middleware_1.authMiddleware, case_controller_3.getCaseById);
+router.put("/:id", auth_middleware_1.authMiddleware, case_controller_4.updateCase);
+router.delete("/:id", auth_middleware_1.authMiddleware, case_controller_5.deleteCase);
+router.patch("/:id/assign", auth_middleware_1.authMiddleware, case_controller_6.assignClerk);
+router.get("/:id/activity", auth_middleware_1.authMiddleware, case_controller_1.getCaseActivity);
+router.get("/:id/details", auth_middleware_1.authMiddleware, case_controller_1.getCaseDetails);
+exports.default = router;

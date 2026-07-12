@@ -52,37 +52,37 @@
 //   }
 // };
 
-
-
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
-export interface AuthRequest extends Request {
-  user?: {
-    userId: number;
-    role: string;
-    email?: string;
-  };
-}
+// export interface AuthRequest extends Request {
+//   user?: {
+//     userId: number;
+//     role: string;
+//     email?: string;
+//   };
+// }
 
 export const authMiddleware = (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction,
-) => {
+):void => {
   const authHeader = req.headers.authorization;
 
+  // if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  //   return res.status(401).json({ message: "Unauthorized" });
+  // }
+
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "Unauthorized" });
+    res.status(401).json({ message: "Unauthorized" });
+    return;
   }
 
   const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET as string
-    ) as {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as {
       userId: number;
       role: string;
       email?: string;
@@ -97,6 +97,10 @@ export const authMiddleware = (
 
     next();
   } catch {
-    return res.status(401).json({ message: "Invalid token" });
+    // catch {
+    //   return res.status(401).json({ message: "Invalid token" });
+    // }
+    res.status(401).json({ message: "Invalid token" });
+    return;
   }
 };

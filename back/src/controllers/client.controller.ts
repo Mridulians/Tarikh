@@ -1,6 +1,6 @@
 // controllers/client.controller.ts
 
-import { AuthRequest } from "../middleware/auth.middleware";
+// import { AuthRequest } from "../middleware/auth.middleware";
 import prisma from "../prisma/client";
 import { Request, Response } from "express";
 import { createClientSchema } from "../validations/client.validation";
@@ -187,7 +187,7 @@ import type { CommunicationMode } from "@prisma/client";
 //   }
 // };
 
-export const createClient = async (req: AuthRequest, res: Response) => {
+export const createClient = async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "Unauthorized" });
@@ -234,7 +234,7 @@ export const createClient = async (req: AuthRequest, res: Response) => {
 
 // GET CLIENTS (ROLE-BASED — FIXED)
 
-export const getClients = async (req: AuthRequest, res: Response) => {
+export const getClients = async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "Unauthorized" });
@@ -307,7 +307,7 @@ export const getClients = async (req: AuthRequest, res: Response) => {
 
 // GET CLIENT BY ID
 
-export const getClientById = async (req: AuthRequest, res: Response) => {
+export const getClientById = async (req: Request, res: Response) => {
   try {
     const clientId = Number(req.params.id);
 
@@ -377,7 +377,7 @@ export const getClientById = async (req: AuthRequest, res: Response) => {
 
 // UPDATE CLIENT
 
-export const updateClient = async (req: AuthRequest, res: Response) => {
+export const updateClient = async (req: Request, res: Response) => {
   try {
     const clientId = Number(req.params.id);
 
@@ -417,7 +417,7 @@ export const updateClient = async (req: AuthRequest, res: Response) => {
 
 // DELETE CLIENT
 
-export const deleteClient = async (req: AuthRequest, res: Response) => {
+export const deleteClient = async (req: Request, res: Response) => {
   try {
     const clientId = Number(req.params.id);
 

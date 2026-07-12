@@ -26,9 +26,9 @@
 //   }
 // };
 
-import { Response } from "express";
+import { Request, Response } from "express";
 import prisma from "../prisma/client";
-import { AuthRequest } from "../middleware/auth.middleware";
+// import { AuthRequest } from "../middleware/auth.middleware";
 
 
 // export const getClerks = async (req: AuthRequest, res: Response) => {
@@ -75,7 +75,7 @@ import { AuthRequest } from "../middleware/auth.middleware";
 
 
 // 📌 Get all clerks (ADMIN can see all, LAWYER can see only their clerks)
-export const getClerks = async (req: AuthRequest, res: Response) => {
+export const getClerks = async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "Unauthorized" });
@@ -124,7 +124,7 @@ export const getClerks = async (req: AuthRequest, res: Response) => {
 };
 
 // 📌 Get all lawyers (ADMIN only)
-export const getLawyers = async (req: AuthRequest, res: Response) => {
+export const getLawyers = async (req: Request, res: Response) => {
   try {
     // 🔐 Auth check
     if (!req.user) {

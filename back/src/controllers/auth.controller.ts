@@ -132,7 +132,7 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import prisma from "../prisma/client";
 import bcrypt from "bcrypt";
-import { AuthRequest } from "../middleware/auth.middleware";
+// import { AuthRequest } from "../middleware/auth.middleware";
 import { registerSchema, loginSchema } from "../validations/auth.validator";
 
 // ✅ REGISTER
@@ -330,7 +330,7 @@ export const login = async (req: Request, res: Response) => {
 };
 
 // ✅ GET CURRENT USER (/me)
-export const me = async (req: AuthRequest, res: Response) => {
+export const me = async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "Unauthorized" });
