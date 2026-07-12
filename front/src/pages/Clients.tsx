@@ -70,7 +70,7 @@ const Clients = () => {
   const { user } = useAuth();
   const [clients, setClients] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [errors, setErrors] = useState<any>({});
+  // const [errors, setErrors] = useState<any>({});
 
   const navigate = useNavigate();
 

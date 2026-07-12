@@ -388,7 +388,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-
+import axios from "axios"; // Import axios to check for AxiosError
 import { getClientDetails, updateClient } from "../api/clients";
 
 const ClientDetails = () => {
@@ -461,7 +461,6 @@ const ClientDetails = () => {
   //   }
   // };
 
-
   const handleUpdate = async () => {
     try {
       const updated = await updateClient(Number(id), form);
@@ -472,7 +471,11 @@ const ClientDetails = () => {
 
       setEditing(false);
     } catch (err) {
-       console.log(err.response?.data);
+      if (axios.isAxiosError(err)) {
+        console.log(err.response?.data);
+      } else {
+        console.log(err);
+      }
     }
   };
 

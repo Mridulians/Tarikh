@@ -84,7 +84,23 @@ import { registerUser } from "../api/auth";
 const Register = () => {
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({
+  interface RegisterData {
+    name: string;
+    email: string;
+    password: string;
+    role: "LAWYER" | "CLERK";
+    lawyerCode: string;
+  }
+
+  // const [form, setForm] = useState({
+  //   name: "",
+  //   email: "",
+  //   password: "",
+  //   role: "LAWYER",
+  //   lawyerCode: "",
+  // });
+
+  const [form, setForm] = useState<RegisterData>({
     name: "",
     email: "",
     password: "",
@@ -96,15 +112,26 @@ const Register = () => {
 
   const [error, setError] = useState("");
 
+  // const handleChange = (
+  //   e:
+  //     | React.ChangeEvent<HTMLInputElement>
+  //     | React.ChangeEvent<HTMLSelectElement>,
+  // ) => {
+  //   setForm({
+  //     ...form,
+  //     [e.target.name]: e.target.value,
+  //   });
+  // };
+
   const handleChange = (
-    e:
-      | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    setForm((prev) => ({
+      ...prev,
+      [name]: name === "role" ? (value as "LAWYER" | "CLERK") : value,
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
